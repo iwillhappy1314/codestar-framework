@@ -67,7 +67,27 @@ if( ! function_exists( 'csf_export' ) ) {
       header('Pragma: no-cache');
       header('Expires: 0');
 
-      echo json_encode( get_option( wp_unslash( $_GET['export'] ) ) );
+      $where  = $_GET[ 'where' ];
+      $unique = wp_unslash($_GET[ 'export' ]);
+
+      switch ($where) {
+        case 'options':
+            $data = ($unique);
+            break;
+        case 'customize':
+            $data = get_theme_mod($unique);
+            break;
+        case 'transient':
+            $data = get_transient($unique);
+            break;
+        case 'network':
+            $data = get_network_option('', $unique);
+            break;
+        default:
+            echo false;
+      }
+
+      echo json_encode($data);
 
     }
 
